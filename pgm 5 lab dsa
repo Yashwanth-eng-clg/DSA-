@@ -47,6 +47,7 @@ void display (QUEUE q)
         printf("\n queue contents are:\n");
         for(i=q.front;i<=q.rear;i++)
             printf("%d\t",q.data[i]);
+            printf("/n")
 
     }
 }
@@ -64,8 +65,9 @@ int main()
         scanf("%d",&ch);
         switch(ch)
         {
-            case 1: printf("\ enter element insert: ");
+            case 1: printf("\n enter element insert: ");
             scanf("%d",&item);
+            enqueue(&s,item);
             break;
             case 2:dequeue(&q);
             break;
@@ -76,3 +78,4 @@ int main()
     }
     return 0;
 }
+
