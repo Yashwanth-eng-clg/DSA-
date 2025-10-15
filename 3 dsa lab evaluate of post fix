@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+#define SIZE 10
+struct stack
+{
+    int top;
+    float data[SIZE];
+};
+typedef struct stack STACK;
+void push(STACK *s,float item)
+{
+    s->data[++(s->top)]=item;
+}
+float pop(STACK *s)
+{
+    return s->data[(s->top)--];
+}
+float compute(float opr1,char symbol,float opr2)
+{
+    switch(symbol)
+    {
+        case '+':return opr1+opr2;
+        case '-':return opr1-opr2;
+        case '*':return opr1*opr2;
+        case '/':return opr1/opr2;
+        case '^':return pow(opr1,opr2);
+        default :printf("\n invalid operator",symbol);
+        exit(1);
+    }
+}
+float evalutepostfix(STACK *s,char postfix[])
+{
+    int i;
+    char symbol;
+    float operand1,operand2,res;
+    for(i=0;postfix[i]!='\0';i++)
+    {
+        symbol=postfix[i];
+        if(isdigit(symbol))
+            push(s,symbol-'0');
+        else
+        {
+            operand2 = pop(s);
+            operand1 = pop(s);
+            res = compute(operand1,symbol,operand2);
+            push(s,res);
+        }
+    }
+    return pop(s);
+}
+int main()
+{
+    char postfix[20];
+    STACK s;
+    s.top=-1;
+    printf("\n read postfix expr: \n");
+    scanf("%s",postfix);
+    float ans;
+    ans = evalutepostfix(&s,postfix);
+    printf("\n find answer is:%f",ans);
+    return 0;
+}
+
