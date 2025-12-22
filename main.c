@@ -1,96 +1,130 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void heapify(int a[], int n)
+int hash[50], tsize, count = 0;
+
+int Cal_Hash(int key)
 {
-    int i, k, v, j, flag;
-    for (i = n / 2; i >= 1; i--)
+    return key % tsize;
+}
+
+int Cal_Rehash(int key)
+{
+    return (key + 1) % tsize;
+}
+
+void insert(int key)
+{
+    int index;
+    if (count != tsize)
     {
-        k = i;
-        v = a[k];
-        flag = 0;
+        index = Cal_Hash(key);
+        while (hash[index] != -1)
+            index = Cal_Rehash(index);
 
-        while (!flag && (2 * k) <= n)
-        {
-            j = 2 * k;
-
-            if (j < n && a[j] < a[j + 1])
-                j = j + 1;
-
-            if (v >= a[j])
-                flag = 1;
-            else
-            {
-                a[k] = a[j];
-                k = j
-            }
-        }
-        a[k] = v;
+        hash[index] = key;
+        count++;
     }
+    else
+        printf("Table is full");
+}
+
+int search(int key)
+{
+    int i, index, loc = -1;
+
+    index = Cal_Hash(key);
+
+    for (i = 0; i < tsize; i++)
+    {
+        loc = (index + i) % tsize;
+        if (hash[loc] == key)
+            return loc;
+    }
+    return -1;
+}
+
+void delete(int key)
+{
+    int loc;
+    if (count == 0)
+    {
+        printf("\nHash table empty, can't delete");
+    }
+    else
+    {
+        loc = search(key);
+        if (loc != -1)
+        {
+            hash[loc] = -1;
+            count--;
+            printf("\nKey deleted");
+        }
+        else
+        {
+            printf("\nKey not found");
+        }
+    }
+}
+
+void display()
+{
+    int i;
+    printf("\nThe elements in the hash table are:\n");
+    for (i = 0; i < tsize; i++)
+        printf("Element at position %d : %d\n", i, hash[i]);
 }
 
 int main()
 {
-    int n = 0, i, a[10], ch;
+    int key, i, ch;
+
+    printf("Enter the size of the hash table: ");
+    scanf("%d", &tsize);
+
+    for (i = 0; i < tsize; i++)
+        hash[i] = -1;
 
     while (1)
     {
-        printf("\n1. Create Heap");
-        printf("\n2. Extract Max");
-        printf("\n3. Exit");
+        printf("\n1. Insert");
+        printf("\n2. Search");
+        printf("\n3. Delete");
+        printf("\n4. Display");
+        printf("\n5. Exit");
         printf("\nEnter your choice: ");
         scanf("%d", &ch);
 
         switch (ch)
         {
         case 1:
-            printf("\nEnter number of elements: ");
-            scanf("%d", &n);
-
-            printf("Enter elements:\n");
-            for (i = 1; i <= n; i++)
-                scanf("%d", &a[i]);
-
-            heapify(a, n);
-
-            printf("\nHeap after heapification:\n");
-            for (i = 1; i <= n; i++)
-                printf("%d\t", a[i]);
-            printf("\n");
+            printf("\nEnter key to insert: ");
+            scanf("%d", &key);
+            insert(key);
             break;
 
         case 2:
-            if (n >= 1)
-            {
-                printf("\nElement deleted (max): %d\n", a[1]);
-
-                a[1] = a[n];
-                n--;
-                heapify(a, n);
-
-                if (n > 0)
-                {
-                    printf("\nHeap after deletion:\n");
-                    for (i = 1; i <= n; i++)
-                        printf("%d\t", a[i]);
-                }
-                else
-                {
-                    printf("\nNo elements left in heap.\n");
-                }
-            }
+            printf("\nEnter key to search: ");
+            scanf("%d", &key);
+            i = search(key);
+            if (i != -1)
+                printf("\nKey found at location %d", i);
             else
-            {
-                printf("\nHeap is empty. Nothing to delete.\n");
-            }
+                printf("\nKey not found");
             break;
 
         case 3:
-            exit(0);
+            printf("\nEnter key to delete: ");
+            scanf("%d", &key);
+            delete(key);
+            break;
 
-        default:
-            printf("\nInvalid choice!\n");
+        case 4:
+            display();
+            break;
+
+        case 5:
+            exit(0);
         }
     }
-    return 0;
 }
