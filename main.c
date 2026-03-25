@@ -3,46 +3,59 @@
 
 int count = 0;
 
-void bubblesort(int a[10], int n)
+void merge(int a[10], int l, int m, int r)
 {
-    int i, j, temp;
-    for(i = 0; i <= n-2; i++)
+    int i, j, k, b[10];
+    i = l;
+    j = m + 1;
+    k = l;
+
+    while (i <= m && j <= r)
     {
-        for(j = 0; j <= n-2-i; j++)
-        {
-            count++;   // comparison count
-            if(a[j] > a[j+1])
-            {
-                temp = a[j];
-                a[j] = a[j+1];
-                a[j+1] = temp;
-            }
-        }
+        count++;
+        if (a[i] < a[j])
+            b[k++] = a[i++];
+        else
+            b[k++] = a[j++];
+    }
+    while (i <= m)
+        b[k++] = a[i++];
+    while (j <= r)
+        b[k++] = a[j++];
+
+    for (i = l; i <= r; i++)
+        a[i] = b[i];
+}
+
+void merge_sort(int a[10], int l, int r)
+{
+    int m;
+    if (l < r)
+    {
+        m = (l + r) / 2;
+        merge_sort(a, l, m);
+        merge_sort(a, m + 1, r);
+        merge(a, l, m, r);
     }
 }
 
 int main()
 {
-    int a[10], n, i;
-
-    printf("Read array size: ");
+    int i, n, a[10];
+    printf("\nRead Array size: ");
     scanf("%d", &n);
 
-    printf("Read array elements:\n");
-    for(i = 0; i < n; i++)
-    {
+    printf("\nRead array elements:\n");
+    for (i = 0; i < n; i++)
         scanf("%d", &a[i]);
-    }
 
-    bubblesort(a, n);
+    merge_sort(a, 0, n - 1);
 
-    printf("\nSorted array:\n");
-    for(i = 0; i < n; i++)
-    {
+    printf("\nSorted elements are:\n");
+    for (i = 0; i < n; i++)
         printf("%d\t", a[i]);
-    }
 
-    printf("\nTotal number of comparisons = %d", count);
-
+    printf("\nTotal number of comparisons = %d\n", count);
     return 0;
 }
+
